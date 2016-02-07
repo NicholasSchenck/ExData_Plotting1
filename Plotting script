@@ -1,0 +1,79 @@
+
+#import household power data
+household_power_consumption <- read.table("~/Downloads/household_power_consumption.txt", sep=";",header=TRUE)
+
+#format as date
+household_power_consumption$Date=as.Date(household_power_consumption$Date,format="%d/%m/%Y")
+
+#subsets data 
+power=subset(household_power_consumption, Date==as.Date("2007-02-01")|Date==as.Date("2007-02-02"))
+
+#formats collumns as numberics
+for (i in 3:9){ 
+  power[,i]=as.numeric(as.character(sub[,i])) 
+}
+
+#Create plot 1
+png("Plot1.png",bg="white")
+hist(power$Global_active_power,
+     col="red",
+     main="Global Active Power",
+     xlab="Global Active Power (kilowatts)")
+dev.off()
+
+#Create plot 2
+power$DateTime <- strptime(paste(power$Date, power$Time), format = "%Y-%m-%d %H:%M:%S")
+
+png("Plot2.png",bg="white")
+
+plot(power$DateTime,power$Global_active_power,
+     ylab="Global Active Power (kilowatts)",
+     type="l",
+     xlab="")
+dev.off()
+
+#Create plot 3
+png("Plot3.png",bg="white")
+plot(power$DateTime,power$Sub_metering_1,
+     ylab="Energy sub metering",
+     type="l",
+     xlab="")
+plot.xy(xy.coords(power$DateTime,power$Sub_metering_2),
+        type="l",
+        col="red")
+plot.xy(xy.coords(power$DateTime,power$Sub_metering_3),
+        type="l",
+        col="blue")
+legend("topright", 
+       legend = c("Sub_metering_1", "Sub_metering_2","Sub_metering_3"),
+       lty=c(1,1,1),
+       col=c("black","red","blue"))
+dev.off()
+
+#Create plot 4
+png("Plot4.png",bg="white")
+par(mfrow=c(2,2))
+plot(power$DateTime,power$Global_active_power,
+     ylab="Global Active Power (kilowatts)",
+     type="l",
+     xlab="")
+plot(power$DateTime,power$Voltage,
+     ylab="Voltage",
+     type="l",
+     xlab="datetime")
+plot(power$DateTime,power$Sub_metering_1,
+     ylab="Energy sub metering",
+     type="l",
+     xlab="")
+plot.xy(xy.coords(power$DateTime,power$Sub_metering_2),
+        type="l",
+        col="red")
+plot.xy(xy.coords(power$DateTime,power$Sub_metering_3),
+        type="l",
+        col="blue")
+        legend("topright", legend = c("Sub_metering_1", "Sub_metering_2","Sub_metering_3"),lty=c(1,1,1),col=c("black","red","blue"))
+plot(power$DateTime,power$Global_reactive_power,
+     ylab="Global_reactive_power",
+     type="l",
+     xlab="datetime")
+dev.off()
